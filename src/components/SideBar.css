@@ -1,0 +1,12 @@
+.side-bar{
+
+}
+
+.side-bar-element {
+  color: blue;
+  padding: 10px;
+}
+
+.side-bar-element:focus {
+  color: red;
+}

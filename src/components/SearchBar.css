@@ -1,0 +1,10 @@
+.search-bar {
+  color: grey;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid;
+}
+
+.fa-magnifying-glass{
+  margin-right: 10px;
+}
