@@ -1,43 +1,61 @@
-import classNames from "classnames";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import "./SideBar.css"
+import SideBarItem from "./SideBarItem";
+import profilePicture from "../img/profile-picture.jpg"
 
-export default function SideBar() {
+export default function SideBar(props) {
 
-  const [pressed, setPressed] = useState(false);
+  const sideBarNavItems = [
+    {
+      display: 'HOME',
+      icon: <i class="fa-solid fa-house"></i>
+    },
+    {
+      display: 'CHAT',
+      icon: <i class="fa-regular fa-comment"></i>
+    },
+    {
+      display: 'CONTACT',
+      icon: <i class="fa-solid fa-user"></i>
+    },
+    {
+      display: 'NOTIFICATION',
+      icon:  <i class="fa-regular fa-bell"></i>
+    },
+    {
+      display: 'CALENDER',
+      icon: <i class="fa-regular fa-calendar"></i>
+    },
+    {
+      display: 'SETTINGS',
+      icon: <i class="fa-solid fa-gear"></i>
+    }
+  ]
 
-  let className = classNames(
-    "side-bar-element"
-    // "selected": props.selected
-  );
-
+  const [focus, setFocus] = useState("0");
 
   return (
-    <>
-      <div className={className}>
-        <i class="fa-regular fa-house-user"></i>
-        HOME 
+    //TODO: format side bar and change side-bar-itmes className 
+    <div className="side-bar">
+      <div className="side-bar-item">
+        <div id="user-profile-picture">
+          <img src={profilePicture} alt="profile"/>
+          <>USER NAME</>
+        </div>
+        <div>
+          {sideBarNavItems.map((item,index) => {
+            return (
+              <SideBarItem key={index} focus={focus} onChange={setFocus} item={item} index={index} selected={
+                parseInt(focus) === index
+              } />
+            )
+          })}
+        </div>
       </div>
-      <div className={className}>
-        <i class="fa-regular fa-comment"></i>
-        CHAT 
+      <div className="logout">
+        <i className="fa-solid fa-power-off side-bar-icon"></i>
+        Log Out
       </div>
-      <div className={className}>
-
-        CONTACT 
-      </div>
-      <div className={className}>
-        <i class="fa-regular fa-bell"></i>
-        NOTIFICATION 
-      </div>
-      <div className={className}>
-        <i class="fa-regular fa-calendar"></i>
-        CALENDAR 
-      </div>
-      <div className={className}>
-        <i class="fa-regular fa-gear"></i>
-        SETTINGS 
-      </div>
-    </>
+    </div>
   )
 }

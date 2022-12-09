@@ -3,12 +3,15 @@ import RecentChat from './components/RecentChat';
 import SearchBar from './components/SearchBar';
 import SideBar from './components/SideBar';
 
+import React from 'react';
+
+
 function App() {
   return (
     <>
-    <SearchBar/>
-    <RecentChat/>
-    <SideBar/>
+      {/* <SearchBar/>
+      <RecentChat/> */}
+      <SideBar/>
     </>
   );
 }
