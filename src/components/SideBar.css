@@ -15,6 +15,7 @@
 
 .side-bar-element.focus {
   background: -webkit-linear-gradient(#eee, #015AED);
+  background-clip:text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   /* color: #015AED; */
