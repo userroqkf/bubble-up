@@ -1,13 +1,13 @@
 .chat-preview {
   display: flex;
   flex-direction: column;
-  /* width: 80%; */
-  width: 500px;
+  width: inherit;
   height: 200px;
-  border: 1px solid #000000;
+  /* border: 1px solid #000000; */
+  border-radius: 10px;
   justify-content: space-around;
-
-
+  background-color: white;
+  margin-top: 1em;
 }
 
 .chat-header {

@@ -1,0 +1,33 @@
+.main-page {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+}
+
+.chat-area {
+  display: flex;
+  flex-direction: row;
+  background-color: #F5F7FA;
+}
+
+
+.chat-area-left{
+  display: flex;
+  flex: 1 0 0 ;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3em;
+  overflow-y: auto;
+  min-height: 0px;
+  width: 90%;
+}
+
+.chat-area-left .header{
+  display: flex;
+  flex-direction: column;
+  width: inherit;
+  position: sticky;
+  top:0em;
+  background-color: #F5F7FA;
+}

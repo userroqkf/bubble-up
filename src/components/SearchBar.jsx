@@ -3,9 +3,8 @@ import "./SearchBar.css"
 
 export default function SearchBar() {
   return (
-    <div className="search-bar">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      Search
-    </div>
+    <textarea rows="1" className="search-bar" placeholder="Search">
+      {/* <i class="fa-solid fa-magnifying-glass"></i> */}
+    </textarea>
   )
 };

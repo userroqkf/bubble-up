@@ -1,8 +1,13 @@
 .search-bar {
   color: grey;
-  margin: 10px;
   padding: 10px;
-  border: 1px solid;
+  border: none;
+  resize: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  border-radius: 10px;
+  background-color: white;
 }
 
 .fa-magnifying-glass{
