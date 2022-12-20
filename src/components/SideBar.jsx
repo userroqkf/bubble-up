@@ -17,18 +17,6 @@ export default function SideBar(props) {
     {
       display: 'CONTACT',
       icon: <i class="fa-solid fa-user"></i>
-    },
-    {
-      display: 'NOTIFICATION',
-      icon:  <i class="fa-regular fa-bell"></i>
-    },
-    {
-      display: 'CALENDER',
-      icon: <i class="fa-regular fa-calendar"></i>
-    },
-    {
-      display: 'SETTINGS',
-      icon: <i class="fa-solid fa-gear"></i>
     }
   ]
 

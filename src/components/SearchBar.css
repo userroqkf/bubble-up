@@ -1,6 +1,11 @@
 .search-bar {
+  width: 100%;
+}
+
+.search-bar-input {
   color: grey;
   padding: 10px;
+  box-sizing: border-box;
   border: none;
   resize: none;
   white-space: nowrap;
@@ -8,8 +13,22 @@
   text-overflow: clip;
   border-radius: 10px;
   background-color: white;
+  width: 100%;
+}
+
+.search-bar-input::placeholder {
+  font-weight: bold;
+}
+
+.search-icon {
+  position: absolute;
+  right: 0em;
+  top: 5.5em;
+
 }
 
 .fa-magnifying-glass{
+  color: grey;
+  font-size: small;
   margin-right: 10px;
 }
