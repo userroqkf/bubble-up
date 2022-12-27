@@ -6,13 +6,16 @@ function App() {
   const [test, setTest] = useState()
 
   useEffect(() => {
-    fetch('http://localhost:3000/')
+    fetch('/test')
       .then((res) => res.json())
-      .then(data => setTest(data.test))
+      .then(data => {setTest(data.test)})
       }, [])
 
   return (
+    <>
     <MainPage/>
+    <h1>{test}</h1>
+    </>
   );
 }
 

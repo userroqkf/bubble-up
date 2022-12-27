@@ -1,7 +1,7 @@
 const express = require('express')
 const { Pool } = require('pg')
 const app = express()
-const port = 3000
+const port = 3001
 const cors = require("cors");
 const { create } = require('domain');
 const bp = require('body-parser');
@@ -22,6 +22,10 @@ const pool = new Pool({
 })
 
 app.get('/', (req, res) => {
+  res.json({test:'Hello World!'})
+})
+
+app.get('/test', (req, res) => {
   res.json({test:'Hello World!'})
 })
 
