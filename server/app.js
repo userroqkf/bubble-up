@@ -1,66 +1,36 @@
-const express = require('express')
-const { Pool } = require('pg')
-const app = express()
-const port = 3001
+const express = require("express");
+const app = express();
+const http = require("http");
 const cors = require("cors");
-const { create } = require('domain');
-const bp = require('body-parser');
-
-app.use(bp.json())
-app.use(bp.urlencoded({extended: true}));
-
-const bcrypt = require('bcrypt');
-const { application } = require('express');
-const saltRounds = 10;
-
-
+const { Server } = require("socket.io");
 app.use(cors());
 
-const pool = new Pool({
-  host: 'localhost',
-  user: 'database-user'
-})
+const server = http.createServer(app);
 
-app.get('/', (req, res) => {
-  res.json({test:'Hello World!'})
-})
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
-app.get('/test', (req, res) => {
-  res.json({test:'Hello World!'})
-})
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
 
-//user auth bycrpt and cookieparser
-const testDB = {
-  testUser: "password123"
-}
+  socket.on("join_room", (data) => {
+    socket.join(data);
+    console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  });
 
-async function createUser(username, password) {
-  const hashPassword =  await bcrypt.hash(password, saltRounds);
-  if (hashPassword && !(username in testDB)) {
-    testDB[username] = hashPassword
-  }
-  console.log(testDB)
-}
+  socket.on("send_message", (data) => {
+    socket.to(data.room).emit("receive_message", data);
+  });
 
-app.get('/auth/', async (req, res) => {
-  const {username, password} = req.body;
-  console.log(testDB[username], password);
-  const match = await bcrypt.compare(password, testDB[username]);
-  console.log(match, "match")
-  if (username in testDB && match) {
-    console.log("true")
-  }
-  res.send("compelete")
-})
+  socket.on("disconnect", () => {
+    console.log("User Disconnected", socket.id);
+  });
+});
 
-app.post('/auth/', (req, res) => {
-  const {username, password} = req.body;
-  createUser(username, password)
-    .then(() => {
-      res.status(200).send("added user")
-    })
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-}) 
+server.listen(3001, () => {
+  console.log("SERVER RUNNING");
+});
