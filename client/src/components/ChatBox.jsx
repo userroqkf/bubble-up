@@ -1,91 +1,41 @@
-import React from "react";
+import React, { useState, useEffect }from "react";
 import ChatMessage from "./ChatMessage";
 import "./ChatBox.css"
 
-const testChat = [
-  {
-    user: "user1",
-    message: "Hello! How are you doing?"
-  },
-  {
-    user: "user1",
-    message: "I need the some help with blah blah blah"
-  },
-  {
-    user: "user2",
-    message:  "sure, I can help you out with that"
-  },
-  {
-    user: "user1",
-    message: "thank you so much"
-  },
-  {
-    user: "user1",
-    message: "no problem"
-  },
-  {
-    user: "user1",
-    message: "Hello! How are you doing?"
-  },
-  {
-    user: "user1",
-    message: "I need the some help with blah blah blah"
-  },
-  {
-    user: "user2",
-    message:  "sure, I can help you out with that"
-  },
-  {
-    user: "user1",
-    message: "thank you so much"
-  },
-  {
-    user: "user1",
-    message: "no problem"
-  },
-  {
-    user: "user1",
-    message: "Hello! How are you doing?"
-  },
-  {
-    user: "user1",
-    message: "I need the some help with blah blah blah"
-  },
-  {
-    user: "user2",
-    message:  "sure, I can help you out with that"
-  },
-  {
-    user: "user1",
-    message: "thank you so much"
-  },
-  {
-    user: "user1",
-    message: "no problem"
-  },
-  {
-    user: "user1",
-    message: "Hello! How are you doing?"
-  },
-  {
-    user: "user1",
-    message: "I need the some help with blah blah blah"
-  },
-  {
-    user: "user2",
-    message:  "sure, I can help you out with that"
-  },
-  {
-    user: "user1",
-    message: "thank you so much"
-  },
-  {
-    user: "user1",
-    message: "no problem"
-  }
-]
 
-export default function ChatBox() {
+export default function ChatBox(props) {
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [messageList, setMessageList] = useState([]);
+
+  const { socket, username, room }  = props;
+
+  const sendMessage = async () => {
+    if (currentMessage !== "") {
+      const messageData = {
+        room: room,
+        author: username,
+        message: currentMessage,
+      };
+
+      await socket.emit("send_message", messageData);
+      setMessageList((list) => [...list, messageData]);
+      setCurrentMessage("");
+    }
+  };
+
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      setMessageList((list) => {
+        console.log(list)
+        return [...list, data]
+      });
+    });
+    return () => {
+      socket.off("receive_message");
+    };
+  }, [socket]);
+
+
   return(
     <div className="chat-box">
       <div className="chat-box-header">
@@ -93,12 +43,28 @@ export default function ChatBox() {
         <h3>Nika Jerrado</h3>
       </div>
       <div className="chat-box-display">
-        {testChat.map((chat, index) => {
-          return < ChatMessage key={index} chat={chat} />
+        {messageList.map((chat, index) => {
+          return < ChatMessage key={index} chat={chat} username={username} />
         })}
       </div>
     <div className="chat-box-footer">
-      <textarea rows="2" placeholder="Type a message here:"></textarea>
+      <textarea
+        type="text"
+        rows={2}
+        value={currentMessage}
+        placeholder="Type a message here:"
+        onChange={(e) => {
+          setCurrentMessage(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if(e.key === "Enter")
+            {
+              e.preventDefault();
+              sendMessage()
+            }
+          }
+        }
+      />
     </div>
         
     </div>

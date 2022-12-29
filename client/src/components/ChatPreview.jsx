@@ -8,10 +8,10 @@ export default function ChatPreview() {
       <div className="chat-header">
         <div className="chat-profile">
           <img id="chat-profile-img" src={chatPreveiwProfile} alt="profile"/>
-          <div><b>First Last</b></div>
+          <div><b>Username</b></div>
         </div>
         <div className="chat-ago">
-          1min ago
+          {/* 1min ago */}
         </div>
       </div>
       <div className="chat-message">

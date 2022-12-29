@@ -9,6 +9,8 @@
   display: flex;
   flex-direction: row;
   background-color: #F5F7FA;
+  width: inherit;
+  height: inherit;
 }
 
 
