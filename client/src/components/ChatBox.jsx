@@ -7,12 +7,13 @@ export default function ChatBox(props) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
-  const { socket, username, room }  = props;
+  const { socket, username, room, focusRoom }  = props;
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: room,
+        //changed room to focusRoom
+        room: focusRoom,
         author: username,
         message: currentMessage,
       };
@@ -23,29 +24,33 @@ export default function ChatBox(props) {
     }
   };
 
+  
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessageList((list) => {
-        console.log(list)
-        return [...list, data]
-      });
+    socket.on("message_sent", (data) => {
+      console.log("message_sent",data)
+      console.log("focus room", focusRoom)
+      if(data.room === focusRoom) {
+        setMessageList((list) => [...list, data]
+        );
+      }
     });
     return () => {
       socket.off("receive_message");
     };
-  }, [socket]);
+  }, []);
 
 
   return(
     <div className="chat-box">
       <div className="chat-box-header">
         <img src={require("../img/chat-preview-profile.jpg")} alt="user1"/>
-        <h3>Nika Jerrado</h3>
+        <h3>{focusRoom}</h3>
       </div>
       <div className="chat-box-display">
-        {messageList.map((chat, index) => {
-          return < ChatMessage key={index} chat={chat} username={username} />
-        })}
+        {messageList
+          .map((chat, index) => {
+            return < ChatMessage key={index} chat={chat} username={username} />
+          })}
       </div>
     <div className="chat-box-footer">
       <textarea

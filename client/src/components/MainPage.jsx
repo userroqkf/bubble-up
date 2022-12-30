@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import SearchBar from './SearchBar';
 import SideBar from './SideBar';
 import ChatPreview from './ChatPreview';
@@ -7,12 +8,15 @@ import "./MainPage.css"
 
 export default function MainPage(props) {
   const {socket, username, room, setRoom, rooms, setRooms} = props;
+
+  const [focusRoom, setFocusRoom] = useState("");
+  //look at sidebar and sidebar items to see how focus is set 
   
   const joinRoom = () => {
     if (username !== "" && room !== "") {
       socket.emit("join_room", room);
       //add rooms array where we can dispaly all rooms connected to the side
-      setRooms((prev) => [...prev, rooms]);
+      setRooms((prev) => [...prev, room]);
       console.log(rooms)
     }
   };
@@ -37,7 +41,17 @@ export default function MainPage(props) {
           </>
         </div>
         {rooms.map((room, index) => {
-          return <ChatPreview socket={socket} key={index} room={room} />
+          return (
+            <ChatPreview 
+              socket={socket}
+              key={index}
+              room={room} 
+              focusRoom={focusRoom}
+              onChange={setFocusRoom}
+              index={index}
+              selected={(focusRoom) === room}
+            />
+          )
         })}
 
       </div>
@@ -45,6 +59,7 @@ export default function MainPage(props) {
           socket={socket} 
           username={username}
           room={room}
+          focusRoom={focusRoom}
         />
       </div>
     </div>

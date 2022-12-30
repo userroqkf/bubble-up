@@ -11,7 +11,7 @@ export default function ChatMessage(props) {
     <div className={`chat-message-container ${className}`}>
       {/* change this to username === chat.author */}
       {chat.author === "user1" ? <img src={require("../img/chat-preview-profile.jpg")} alt="user1"/> : ""}
-      <div className={`chat-message ${className}`}>{props.chat.message}</div>
+      <div className={`chat-message ${className}`}>{chat.message}</div>
     </div>
   )
 }

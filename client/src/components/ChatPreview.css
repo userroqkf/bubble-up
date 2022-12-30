@@ -10,6 +10,10 @@
   margin-top: 1em;
 }
 
+.chat-preview.focus{
+  background-color:#485B80;
+}
+
 .chat-header {
   display: flex;
   flex-direction: row;

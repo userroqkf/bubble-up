@@ -18,9 +18,6 @@ function App() {
   const [rooms, setRooms] = useState([]);
   const [showChat, setShowChat] = useState(false);
 
-  const [focusRoom, currentFocusRoom] = useState("");
-//look at sidebar and sidebar items to see how focus is set 
-
   return (
     <div className="App">
       {!showChat ? (
@@ -28,7 +25,7 @@ function App() {
           setShowChat={setShowChat} 
           socket={socket} 
           room={room} 
-          setRoom={setRoom} 
+          // setRoom={setRoom} 
           username={username} 
           setUsername={setUsername}
         />
