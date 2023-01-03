@@ -15,12 +15,18 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`);
+  // console.log(`User Connected: ${socket.id}`);
+  // idea: get users socket info and put them in a queue and pop them each time they press the join room button
+  console.log("connection socket", socket.id);
   socket.on("join_room", (data) => {
+    const peer = socketQueue.pop();
+    peer.join(data)
+    socket.join(data)
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
 
   socket.on("send_message", (data) => {
+    console.log("send message", data)
     socket.to(data.room).emit("receive_message", data);
   });
 
@@ -30,5 +36,4 @@ io.on("connection", (socket) => {
 });
 
 server.listen(3001, () => {
-  console.log("SERVER RUNNING");
 });

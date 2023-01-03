@@ -19,25 +19,21 @@ export default function ChatBox(props) {
       };
 
       await socket.emit("send_message", messageData);
-      setMessageList((list) => [...list, messageData]);
+      setMessageList((prev) => [...prev, messageData]);
       setCurrentMessage("");
     }
   };
 
   
   useEffect(() => {
-    socket.on("message_sent", (data) => {
-      console.log("message_sent",data)
-      console.log("focus room", focusRoom)
-      if(data.room === focusRoom) {
-        setMessageList((list) => [...list, data]
-        );
-      }
+    socket.on("receive_message", (data) => {
+      // console.log("receive_message",data, "focus room", focusRoom)
+      setMessageList((prev) => [...prev, data]);
     });
     return () => {
       socket.off("receive_message");
     };
-  }, []);
+  }, [socket]);
 
 
   return(
@@ -48,6 +44,7 @@ export default function ChatBox(props) {
       </div>
       <div className="chat-box-display">
         {messageList
+          .filter(chat => chat.room === focusRoom)
           .map((chat, index) => {
             return < ChatMessage key={index} chat={chat} username={username} />
           })}

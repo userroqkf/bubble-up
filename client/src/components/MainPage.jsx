@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import SearchBar from './SearchBar';
 import SideBar from './SideBar';
 import ChatPreview from './ChatPreview';
@@ -10,14 +10,12 @@ export default function MainPage(props) {
   const {socket, username, room, setRoom, rooms, setRooms} = props;
 
   const [focusRoom, setFocusRoom] = useState("");
-  //look at sidebar and sidebar items to see how focus is set 
   
   const joinRoom = () => {
     if (username !== "" && room !== "") {
       socket.emit("join_room", room);
-      //add rooms array where we can dispaly all rooms connected to the side
       setRooms((prev) => [...prev, room]);
-      console.log(rooms)
+      setFocusRoom(room);
     }
   };
 
@@ -28,7 +26,7 @@ export default function MainPage(props) {
       <div className='chat-area'>
       <div className='chat-area-left'>
         <div className='header'>
-          <h1>Chat</h1>
+          <h1>Bubble-up</h1>
           <>
             <input
                 type="text"
