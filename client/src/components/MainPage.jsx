@@ -11,11 +11,15 @@ export default function MainPage(props) {
 
   const [focusRoom, setFocusRoom] = useState("");
   
-  const joinRoom = () => {
-    if (username !== "" && room !== "") {
-      socket.emit("join_room", room);
-      setRooms((prev) => [...prev, room]);
-      setFocusRoom(room);
+  const joinRoom = async (e) => {
+    e.preventDefault();
+    if (room !== "") {
+      await socket.emit("join_room");
+      await socket.on("room_id", (room) => {
+        console.log("room_id", room)
+        setRooms((prev) => [...prev, room]);
+        setFocusRoom(room);
+      })
     }
   };
 
@@ -27,7 +31,6 @@ export default function MainPage(props) {
       <div className='chat-area-left'>
         <div className='header'>
           <h1>Bubble-up</h1>
-          <>
             <input
                 type="text"
                 placeholder="Room ID..."
@@ -36,7 +39,6 @@ export default function MainPage(props) {
                 }}
               />
             <button onClick={joinRoom}>Join A Room</button>
-          </>
         </div>
         {rooms.map((room, index) => {
           return (
