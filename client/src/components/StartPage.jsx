@@ -1,8 +1,11 @@
 import React from "react";
 import "./StartPage.css"
+
+import io from 'socket.io-client';
+
 export default function StartPaqe(props) {
   // props.findRandomUser("nothing")
-  const { setShowChat, socket, room, setRoom, username, setUsername } = props;
+  const { setShowChat, room, setRoom, username, setUsername } = props;
   // const joinRoom = () => {
   //   if (username !== "" && room !== "") {
   //     socket.emit("join_room", room);

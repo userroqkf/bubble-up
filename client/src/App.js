@@ -11,11 +11,10 @@ import MainPage from './components/MainPage';
 
 const socket = io.connect("http://localhost:3000");
 
-
 function App() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
-  const [rooms, setRooms] = useState([]);
+  // const [rooms, setRooms] = useState([]);
   const [showChat, setShowChat] = useState(false);
 
   return (
@@ -35,8 +34,8 @@ function App() {
           username={username}
           room={room} 
           setRoom={setRoom} 
-          rooms={rooms}
-          setRooms={setRooms}
+          // rooms={rooms}
+          // setRooms={setRooms}
         />
       )}
     </div>

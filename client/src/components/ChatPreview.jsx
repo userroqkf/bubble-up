@@ -19,6 +19,8 @@ export default function ChatPreview(props) {
           <div><b>{room}</b></div>
         </div>
         <div className="chat-ago">
+          chat index {index}
+        
           {/* 1min ago */}
         </div>
       </div>

@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+
+button {
+  width: 225px;
+  height: 50px;
+  margin: 7px;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 16px;
+  background: #43A6C6;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #43A6C6;
+}
+
