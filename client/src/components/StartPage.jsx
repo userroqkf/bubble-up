@@ -1,18 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import "./StartPage.css"
 
-import io from 'socket.io-client';
 
 export default function StartPaqe(props) {
-  // props.findRandomUser("nothing")
-  const { setShowChat, room, setRoom, username, setUsername } = props;
-  // const joinRoom = () => {
-  //   if (username !== "" && room !== "") {
-  //     socket.emit("join_room", room);
-  //     //add rooms array where we can dispaly all rooms connected to the side
-  //     setShowChat(true);
-  //   }
-  // };
+  const { setShowChat, username, setUsername } = props;
 
   const joinMainPage = () => {
     if(username !== "") {
@@ -48,13 +39,7 @@ export default function StartPaqe(props) {
             setUsername(event.target.value);
           }}
         />
-        {/* <input
-          type="text"
-          placeholder="Room ID..."
-          onChange={(event) => {
-            setRoom(event.target.value);
-          }}
-        /> */}
+
         <button onClick={joinMainPage}>Start Chatting</button>
       </div>
     </div>

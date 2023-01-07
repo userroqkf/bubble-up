@@ -31,15 +31,15 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`user connected : ${socket.id}`);
+  
 
   socket.on("disconnect", () => {
-    console.log("User Disconnected", socket.id);
+    
   });
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  
 }) 
 
 
@@ -66,16 +66,16 @@ app.listen(port, () => {
 //   if (hashPassword && !(username in testDB)) {
 //     testDB[username] = hashPassword
 //   }
-//   console.log(testDB)
+//   
 // }
 
 // app.get('/auth/', async (req, res) => {
 //   const {username, password} = req.body;
-//   console.log(testDB[username], password);
+//   
 //   const match = await bcrypt.compare(password, testDB[username]);
-//   console.log(match, "match")
+//   
 //   if (username in testDB && match) {
-//     console.log("true")
+//     
 //   }
 //   res.send("compelete")
 // })

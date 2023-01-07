@@ -1,12 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
-// import '../src/components/App.css'
-// import MainPage from './components/MainPage';
 import StartPaqe from './components/StartPage';
-import Chat from './components/Chat';
 
 import io from 'socket.io-client';
-import ChatBox from './components/ChatBox';
 import MainPage from './components/MainPage';
 
 const socket = io.connect("http://localhost:3000");
@@ -14,7 +10,6 @@ const socket = io.connect("http://localhost:3000");
 function App() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
-  // const [rooms, setRooms] = useState([]);
   const [showChat, setShowChat] = useState(false);
 
   return (
@@ -24,7 +19,6 @@ function App() {
           setShowChat={setShowChat} 
           socket={socket} 
           room={room} 
-          // setRoom={setRoom} 
           username={username} 
           setUsername={setUsername}
         />
@@ -34,8 +28,6 @@ function App() {
           username={username}
           room={room} 
           setRoom={setRoom} 
-          // rooms={rooms}
-          // setRooms={setRooms}
         />
       )}
     </div>
@@ -43,3 +35,5 @@ function App() {
 }
 
 export default App;
+
+//TODO: Format Buttons accept decline and join room 

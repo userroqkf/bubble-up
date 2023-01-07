@@ -5,6 +5,7 @@ import ChatPreview from './ChatPreview';
 import ChatBox from './ChatBox';
 
 import "./MainPage.css"
+import { useReducer } from 'react';
 
 export default function MainPage(props) {
   const {socket, username, room, setRoom} = props;
@@ -18,22 +19,28 @@ export default function MainPage(props) {
   const [newRandomUser, setnewRandomUser] = useState(true);
 
   const [rooms, setRooms] = useState([]);
+
+  const [peerUsername, setPeerUsername] = useState("");
   
   const joinRoom =  (data) => {
-    console.log("join room button clicked")
-    socket.emit("join_room", data);
-      // let room = socket.id+data;
+    socket.emit("join_room", {peerId:data, username: username});
   };
 
   useEffect(() => {
+    socket.on("get_username", () => {
+      socket.emit("send_username", username);
+    })
+    return () => {
+      socket.off("get_username");
+    };
+  }, [socket, username])
+
+  useEffect(() => {
     socket.on("room_id", (data) => {
-      // console.log("room id socket", socket.id)
-      // console.log("room id data", data.name)
-      // console.log("client room id", data.room)
       setnewIncomingChat(false);
-      // console.log("before setrooms",rooms)
-      setRooms((prev) => [...prev, data.room]);
-      setFocusRoom(data.room);
+      setRooms((prev) => [...prev, data]);
+      setFocusRoom(data);
+      // setPeerUsername(data.peerUsername);
     })
     return () => {
       socket.off("room_id");
@@ -45,9 +52,9 @@ export default function MainPage(props) {
       setChatRequestData(data);
       setnewIncomingChat(true);
     })
-    return () => {
-      socket.off("new_chat_request");
-    };
+    // return () => {
+    //   socket.off("new_chat_request");
+    // };
   }, [socket])
 
   useEffect(() => {
@@ -61,6 +68,7 @@ export default function MainPage(props) {
 
   useEffect(() => {
     socket.on("new_random_user", () => {
+      console.log("new random user client")
       setnewRandomUser(true);
     }) 
     return () => {
@@ -78,12 +86,12 @@ export default function MainPage(props) {
 
   useEffect(() => {
     socket.on("remove_chat", (data) => {
-      console.log("remove_chat data", data)
-      setRooms((prev) => prev.filter(room => {
-        console.log("room inside filter", room)
-        return room !== data
+      
+      setRooms((prev) => prev.filter(roomData => {
+        
+        return roomData.room !== data
     }));
-      console.log("remove chat rooms",rooms)
+      
       setFocusRoom();
     })
     return () => {
@@ -96,43 +104,12 @@ export default function MainPage(props) {
     socket.emit("find_random_user");
   };
 
-
-
-  // socket.on("room_id", data => {
-  //   console.log("client show",data, socket.id);
-  // })
-
-  // const joinRoom = async (data) => {
-  //   if (room !== "") {
-  //     await socket.emit("join_room", data);
-  //     await socket.on("room_id", (room) => {
-  //       console.log("room_id", room)
-  //       console.log("joined room id", socket.id);
-  //       setRooms((prev) => [...prev, room]);
-  //       setFocusRoom(room);
-  //     })
-  //   }
-  // };
-
-
-
-
-
   return(
     <div className='main-page'>
-      {/* <RecentChat/> */}
-      {/* <SideBar/> */}
       <div className='chat-area'>
       <div className='chat-area-left'>
         <div className='header'>
           <h1>Bubble-up</h1>
-            {/* <input
-                type="text"
-                placeholder="Room ID..."
-                onChange={(event) => {
-                  setRoom(event.target.value);
-                }}
-              /> */}
           {newRandomUser ? <button onClick={findRandomUser}>Join A Room</button> : <div> No New User </div>}
         </div>
       {newIncomingChat &&
@@ -142,34 +119,34 @@ export default function MainPage(props) {
             joinRoom(chatRequestData)
           }}> accpet </button>
           <button onClick={() => {
-            console.log("join room button clicked") 
+            
             setnewIncomingChat(false)}
           }
           > decline </button>
         </div>
         }
-        {rooms.map((room, index) => {
-          console.log("map index", index)
+        {rooms.map((roomData, index) => {
+          
           return (
             <ChatPreview 
               socket={socket}
               key={index}
-              room={room} 
-              focusRoom={focusRoom}
+              roomData={roomData} 
               onChange={setFocusRoom}
-              index={index}
-              selected={(focusRoom) === room}
+              peerUsername={roomData.peerUsername}
+              selected={focusRoom.room === roomData.room}
             />
           )
         })}
 
       </div>
-        <ChatBox 
+        {focusRoom && <ChatBox 
           socket={socket} 
           username={username}
           room={room}
-          focusRoom={focusRoom}
-        />
+          focusRoom={focusRoom.room}
+          peerUsername={focusRoom.peerUsername}
+        />}
       </div>
     </div>
   )
