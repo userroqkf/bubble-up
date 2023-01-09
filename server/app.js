@@ -18,7 +18,6 @@ const usersQueue = {};
 let allUsers = []
 
 io.on("connection", (socket) => {
-  console.log(Object.keys(usersQueue));
   socket.broadcast.emit('new_random_user');
     
   for (const user in usersQueue) {
@@ -47,17 +46,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("find_random_user", () => {
-    let notNewUser = true;
-    while (notNewUser) {
-      if(usersQueue[socket.id].length > 1 && socket.id !== usersQueue[socket.id][0].id) {
-        let peer = usersQueue[socket.id].shift();
-        notNewUser = socket.rooms.has(socket.id + peer.id) || socket.rooms.has(peer.id+socket.id)
-        if (!notNewUser && peer.id !== socket.id) {
-          io.to(peer.id).emit("new_chat_request", socket.id);
-        }
-      } else {
-        socket.emit("no_new_user");
+    if(usersQueue[socket.id].length > 1 && socket.id !== usersQueue[socket.id][0].id) {
+      let peer = usersQueue[socket.id].shift();
+      let notNewUser = socket.rooms.has(socket.id + peer.id) || socket.rooms.has(peer.id+socket.id)
+      if (!notNewUser && peer.id !== socket.id) {
+        io.to(peer.id).emit("new_chat_request", socket.id);
       }
+    } else {
+      socket.emit("no_new_user");
     }
   })
 

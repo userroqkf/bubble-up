@@ -1,14 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import SearchBar from './SearchBar';
-import SideBar from './SideBar';
 import ChatPreview from './ChatPreview';
 import ChatBox from './ChatBox';
 
 import "./MainPage.css"
-import { useReducer } from 'react';
 
 export default function MainPage(props) {
-  const {socket, username, room, setRoom} = props;
+  const {socket, username, room} = props;
 
   const [focusRoom, setFocusRoom] = useState("");
 
@@ -19,8 +16,6 @@ export default function MainPage(props) {
   const [newRandomUser, setnewRandomUser] = useState(true);
 
   const [rooms, setRooms] = useState([]);
-
-  const [peerUsername, setPeerUsername] = useState("");
   
   const joinRoom =  (data) => {
     socket.emit("join_room", {peerId:data, username: username});
@@ -52,9 +47,9 @@ export default function MainPage(props) {
       setChatRequestData(data);
       setnewIncomingChat(true);
     })
-    // return () => {
-    //   socket.off("new_chat_request");
-    // };
+    return () => {
+      socket.off("new_chat_request");
+    };
   }, [socket])
 
   useEffect(() => {
@@ -68,7 +63,6 @@ export default function MainPage(props) {
 
   useEffect(() => {
     socket.on("new_random_user", () => {
-      console.log("new random user client")
       setnewRandomUser(true);
     }) 
     return () => {
@@ -86,9 +80,7 @@ export default function MainPage(props) {
 
   useEffect(() => {
     socket.on("remove_chat", (data) => {
-      
       setRooms((prev) => prev.filter(roomData => {
-        
         return roomData.room !== data
     }));
       
