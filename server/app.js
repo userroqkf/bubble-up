@@ -14,23 +14,31 @@ const io = new Server(server, {
   },
 });
 
-const usersQueue = {};
-let allUsers = []
+let allUsers = [];
+const clientNewUser = {};
 
-io.on("connection", (socket) => {
+io.on("connection", async(socket) => {
   socket.broadcast.emit('new_random_user');
-    
-  for (const user in usersQueue) {
-    usersQueue[user].push(socket);
-  }
-  allUsers.push(socket);
-  if (!(socket.id in usersQueue)) {
-    usersQueue[socket.id] = allUsers;
-  }
+  
+  const ids = await io.fetchSockets();
+  allUsers = ids;
+
+
+  allUsers.forEach(user => {
+    if (clientNewUser.hasOwnProperty(user.id) && user.id !== socket.id) {
+      clientNewUser[user.id].add(socket);
+    } else {
+      const filteredExcludingCurrSocket = allUsers.filter(user => user.id !== socket.id);
+      const initialiseSet = new Set(filteredExcludingCurrSocket);
+      clientNewUser[user.id] = initialiseSet;
+    }
+  });
+
+  console.log("all client new user obj", clientNewUser);
 
   socket.on("join_room", (data) => {
     let room = socket.id + data.peerId;
-    let peer = allUsers.find(user => user.id === data.peerId)
+    let peer = allUsers.find(user => user.id === data.peerId);
 
     if (peer) {
       peer.join(room);
@@ -40,35 +48,58 @@ io.on("connection", (socket) => {
         socket.emit("room_id", {'name': socket.id, 'room':room, 'peerUsername': peerUsername });
         peer.emit("room_id", {'name': peer.id, 'room':room, 'peerUsername': data.username});
       });
-    }else{
-      socket.emit("remove_new_chat_request")
+    } else {
+      socket.emit("remove_new_chat_request");
     }
   });
 
   socket.on("find_random_user", () => {
-    if(usersQueue[socket.id].length > 1 && socket.id !== usersQueue[socket.id][0].id) {
-      let peer = usersQueue[socket.id].shift();
-      let notNewUser = socket.rooms.has(socket.id + peer.id) || socket.rooms.has(peer.id+socket.id)
-      if (!notNewUser && peer.id !== socket.id) {
-        io.to(peer.id).emit("new_chat_request", socket.id);
-      }
-    } else {
+    console.log("finding new user",clientNewUser);
+    console.log("cleint new user length",clientNewUser[socket.id].size);
+    if (clientNewUser[socket.id].size !== 0) {
+      // from new user remove random index
+      const newUsers = Array.from(clientNewUser[socket.id]);
+      const peer = newUsers[Math.floor(Math.random() * newUsers.length)];
+      clientNewUser[socket.id].forEach(newUserSocket => {
+        if (newUserSocket.id === peer.id) {
+          clientNewUser[socket.id].delete(newUserSocket);
+        }
+      });
+      clientNewUser[peer.id].forEach(newUserSocket => {
+        if (newUserSocket.id === socket.id) {
+          clientNewUser[peer.id].delete(newUserSocket);
+        }
+      });
+      console.log("peer and socket",peer.id, socket.id);
+      io.to(peer.id).emit("new_chat_request", socket.id);
+    }
+    if (clientNewUser[socket.id].size === 0) {
       socket.emit("no_new_user");
     }
-  })
+  });
 
   socket.on("send_message", (data) => {
     socket.to(data.room).emit("receive_message", data);
   });
 
 
-  socket.on("disconnecting", () => {
+  socket.on("disconnecting", async() => {
+    console.log(socket.rooms);
     socket.rooms.forEach((room) => {
       socket.to(room).emit("remove_chat", room);
-    })
-    // queue = queue.filter(user => user.id !== socket.id);
-    delete usersQueue[socket.id];
-    allUsers = allUsers.filter(user => user.id !== socket.id);
+    });
+    delete clientNewUser[socket.id];
+    for (const user in clientNewUser) {
+      console.log("disconnect user",user);
+      clientNewUser[user].forEach(userSocket => {
+        console.log("delete usersocekt id",userSocket.id);
+        if (userSocket.id === socket.id) {
+          clientNewUser[userSocket.id].delete(userSocket);
+        }
+      });
+    }
+    const ids = await io.fetchSockets();
+    allUsers = ids;
   });
 });
 

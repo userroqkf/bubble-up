@@ -20,7 +20,9 @@ export default function MainPage(props) {
   const joinRoom =  (data) => {
     socket.emit("join_room", {peerId:data, username: username});
   };
-
+  useEffect (() => {
+    console.log("rooms changed",rooms);
+  }, [rooms])
   useEffect(() => {
     socket.on("get_username", () => {
       socket.emit("send_username", username);
@@ -32,15 +34,19 @@ export default function MainPage(props) {
 
   useEffect(() => {
     socket.on("room_id", (data) => {
+      console.log("room data",data);
       setnewIncomingChat(false);
-      setRooms((prev) => [...prev, data]);
+      const found = rooms.some(el => el.room === data.room);
+      if (!found) {
+        setRooms((prev) => [...prev, data]);
+      }
       setFocusRoom(data);
-      // setPeerUsername(data.peerUsername);
+      console.log("after set room", rooms);
     })
     return () => {
       socket.off("room_id");
     };
-  }, [socket])
+  }, [socket, rooms])
 
   useEffect(() => {
     socket.on("new_chat_request", (data) => {
@@ -69,6 +75,7 @@ export default function MainPage(props) {
       socket.off("new_random_user");
     };
   }, [socket])
+
   useEffect(() => {
   socket.on("remove_new_chat_request", () => {
     setnewIncomingChat(false)
