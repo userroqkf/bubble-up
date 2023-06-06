@@ -3,17 +3,20 @@ import "./StartPage.css"
 
 
 export default function StartPaqe(props) {
-  const { setShowChat, username, setUsername } = props;
+  const { setShowChat, username, setUsername, setUsernameAlreadySelected, socket } = props;
 
   const joinMainPage = () => {
     if(username !== "") {
       setShowChat(true);
+      setUsernameAlreadySelected(true)
+      socket.auth = { username };
+      socket.connect();
     }
   }
 
   return(
     <div className="joinChatContainer">
-      <div class="wrapper">
+      <div className="wrapper">
             <h1>Bubble Up</h1>
             <div><span className="dot"></span></div>
             <div><span className="dot"></span></div>

@@ -12,13 +12,8 @@ export default function ChatPreview(props) {
 
   return(
     <div className={previewClassName} onClick={() => {
-      // console.log("room", room.room)
       onChange(roomData)}}>
-      {/* <div className="chat-header"> */}
-        {/* <div className="chat-profile"> */}
           <div><b>User: {peerUsername}</b></div>
-        {/* </div> */}
-      {/* </div> */}
     </div>
   )
 }

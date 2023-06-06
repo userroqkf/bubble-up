@@ -5,10 +5,12 @@ import StartPaqe from './components/StartPage';
 import io from 'socket.io-client';
 import MainPage from './components/MainPage';
 
-const socket = io.connect("http://localhost:3000");
+const URL = "http://localhost:3000"
+const socket = io.connect(URL, {autoConnect: false});
 
 function App() {
   const [username, setUsername] = useState("");
+  const [usernameAlreadySelected, setUsernameAlreadySelected] = useState(false)
   const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
 
@@ -21,6 +23,7 @@ function App() {
           room={room} 
           username={username} 
           setUsername={setUsername}
+          setUsernameAlreadySelected={setUsernameAlreadySelected}
         />
       ) : (
         <MainPage 
@@ -35,5 +38,4 @@ function App() {
 }
 
 export default App;
-
 //TODO: Format Buttons accept decline and join room 
