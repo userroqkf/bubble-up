@@ -7,7 +7,7 @@ export default function ChatBox(props) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
-  const { socket, username, room, focusRoom, peerUsername }  = props;
+  const { socket, username, room, focusRoom, peerUsername, peerId }  = props;
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -15,6 +15,8 @@ export default function ChatBox(props) {
         room: focusRoom,
         author: socket.id,
         username: username,
+        peer: peerUsername,
+        peerId: peerId,
         message: currentMessage,
       };
 

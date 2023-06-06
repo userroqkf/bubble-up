@@ -17,87 +17,79 @@ export default function MainPage(props) {
 
   const [rooms, setRooms] = useState([]);
   
-  const joinRoom =  (data) => {
-    socket.emit("join_room", {peerId:data, username: username});
-  };
-  useEffect (() => {
-    console.log("rooms changed",rooms);
-  }, [rooms])
   useEffect(() => {
-    socket.on("get_username", () => {
-      socket.emit("send_username", username);
-    })
-    return () => {
-      socket.off("get_username");
-    };
-  }, [socket, username])
 
-  useEffect(() => {
-    socket.on("room_id", (data) => {
-      console.log("room data",data);
+    console.log("rooms useeffect", rooms);
+
+    function sendUsername() {
+      socket.emit("send_username", username);
+    }
+
+    function roomId(data) {
       setnewIncomingChat(false);
       const found = rooms.some(el => el.room === data.room);
       if (!found) {
         setRooms((prev) => [...prev, data]);
       }
       setFocusRoom(data);
-      console.log("after set room", rooms);
-    })
-    return () => {
-      socket.off("room_id");
-    };
-  }, [socket, rooms])
+    }
 
-  useEffect(() => {
-    socket.on("new_chat_request", (data) => {
+    function newChatRequest(data) {
       setChatRequestData(data);
       setnewIncomingChat(true);
-    })
-    return () => {
-      socket.off("new_chat_request");
-    };
-  }, [socket])
+    }
 
-  useEffect(() => {
-    socket.on("no_new_user", () => {
+    function noNewUser() {
       setnewRandomUser(false);
-    }) 
-    return () => {
-      socket.off("no_new_user");
-    };
-  }, [socket])
+    }
+  
 
-  useEffect(() => {
-    socket.on("new_random_user", () => {
+    function newRandomUser() {
       setnewRandomUser(true);
-    }) 
-    return () => {
-      socket.off("new_random_user");
-    };
-  }, [socket])
+    }
 
-  useEffect(() => {
-  socket.on("remove_new_chat_request", () => {
-    setnewIncomingChat(false)
-  })
-  return () => {
-    socket.off("remove_new_chat_request");
-  };
-  }, [socket])
+    function removeNewChatRequest() {
+      setnewIncomingChat(false)
+    }
+    socket.on("get_username",sendUsername)
+    socket.on("room_id", (data) => roomId(data))
+    socket.on("new_chat_request", (data) => newChatRequest(data))
+    socket.on("no_new_user", noNewUser)
+    socket.on("new_random_user", newRandomUser)
+    socket.on("remove_new_chat_request",removeNewChatRequest)
+
+    return () => {
+      socket.off("get_username")
+      socket.off("room_id")
+      socket.off("new_chat_request")
+      socket.off("no_new_user")
+      socket.off("new_random_user")
+      socket.off("remove_new_chat_request")
+    };
+
+  }, [rooms, socket,username, room])
 
   useEffect(() => {
     socket.on("remove_chat", (data) => {
       setRooms((prev) => prev.filter(roomData => {
         return roomData.room !== data
     }));
-      
-      setFocusRoom();
+      if (rooms) {
+        const randRoom = rooms[Math.floor(Math.random()*rooms.length)];
+        setFocusRoom(randRoom);
+      } else {
+        setFocusRoom("")
+    }
     })
-    return () => {
-      socket.off("remove_chat");
-    };
-  }, [socket, rooms])
 
+    return () => {
+      socket.off("reove_chat")
+    }
+  }, [rooms, socket])
+
+  const joinRoom =  (data) => {
+    socket.emit("join_room", {peerId:data, username: username});
+  };
 
   const findRandomUser = () => {
     socket.emit("find_random_user");
@@ -109,7 +101,11 @@ export default function MainPage(props) {
       <div className='chat-area-left'>
         <div className='header'>
           <h1>Bubble-up</h1>
-          {newRandomUser ? <button onClick={findRandomUser}>Join A Room</button> : <div> No New User </div>}
+          {newRandomUser ? <button onClick={() => {
+            console.log('clicked')
+            findRandomUser()
+          }
+          }>Join A Room</button> : <div> No New User </div>}
         </div>
       {newIncomingChat &&
         <div>
@@ -145,6 +141,7 @@ export default function MainPage(props) {
           room={room}
           focusRoom={focusRoom.room}
           peerUsername={focusRoom.peerUsername}
+          peerId={focusRoom.peerId}
         />}
       </div>
     </div>
