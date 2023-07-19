@@ -2,24 +2,6 @@
 ---
 Bublle up is a real time chatting application where users can meet new people around the world. 
 
-
-## How to get started
----
-To start using the app you will need to start the server and client application.
-```
-cd server
-npm install
-npm start
-```
-On seperate terminal window start client
-```
-cd client
-npm install
-npm start
-```
-
-You should be redirected to `http://localhost:3000`
-
 ---
 # Bubble-up
 
